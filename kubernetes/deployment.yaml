@@ -30,9 +30,10 @@ spec:
       containers:
         - name: fastapi-app
           # NOTE: In production, this image URL will be dynamically updated by Kustomize or CI
-          image: python:3.12-slim
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.9
           imagePullPolicy: IfNotPresent
-          command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+          
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
