@@ -30,7 +30,7 @@ spec:
       containers:
         - name: fastapi-app
           # NOTE: In production, this image URL will be dynamically updated by Kustomize or CI
-          image: public.ecr.aws/docker/library/python:3.12-slim
+          image: python:3.12-slim
           imagePullPolicy: IfNotPresent
           command: ["sh", "-c", "echo 'Container running' && sleep 3600"]
           securityContext:
