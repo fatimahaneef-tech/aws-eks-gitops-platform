@@ -11,6 +11,6 @@ resources:
 
 # Argo CD or CI can override the image tag cleanly without modifying raw YAML files
 images:
-  - name: public.ecr.aws/docker/library/python
-    newName: 123456789012.dkr.ecr.us-east-1.amazonaws.com/portfolio-fastapi-app
-    newTag: v1.0.0
+  - name: portfolio-fastapi-app
+    newName: 109272107973.dkr.ecr.us-east-1.amazonaws.com/portfolio-fastapi-app
+    newTag: v1.0.1
