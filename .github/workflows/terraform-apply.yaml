@@ -1,0 +1,40 @@
+name: "Terraform Apply (Gated)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type 'apply' to confirm provisioning AWS resources"
+        required: true
+        default: "preview"
+
+permissions:
+  id-token: write # Required for AWS OIDC authentication
+  contents: read
+
+jobs:
+  apply:
+    name: "Controlled Terraform Apply"
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirmation == 'apply'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+      - name: Terraform Apply
+        run: terraform -chdir=terraform apply -auto-approve

@@ -1,0 +1,55 @@
+name: "Build & Push Application to ECR"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "app/**"
+
+permissions:
+  id-token: write # Required for AWS OIDC
+  contents: write  # Required to commit the updated image tag to Git
+
+jobs:
+  build-and-push:
+    name: "Docker Build & Push"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Tag Docker Image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: portfolio-fastapi-app
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./app
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Update Kubernetes Manifest Tag for GitOps Sync
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: portfolio-fastapi-app
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd kubernetes
+          # Update kustomization.yaml image tag
+          sed -i "s/newTag: .*/newTag: $IMAGE_TAG/g" kustomization.yaml
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add kustomization.yaml
+          git commit -m "chore(gitops): update image tag to ${IMAGE_TAG} [skip ci]" || echo "No changes"
+          git push

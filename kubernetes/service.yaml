@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+  namespace: portfolio-app
+  labels:
+    app: fastapi-app
+spec:
+  type: ClusterIP # Cost-effective: no AWS Load Balancer fee. Tested via port-forward.
+  selector:
+    app: fastapi-app
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
