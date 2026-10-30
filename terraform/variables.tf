@@ -1,3 +1,39 @@
+variable "aws_region" {
+  type        = string
+  description = "AWS region for all infrastructure resources."
+  default     = "us-east-1"
+}
+
+variable "environment" {
+  type        = string
+  description = "Deployment environment name (e.g., dev, staging, prod)."
+  default     = "dev"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Name of the EKS Kubernetes cluster."
+  default     = "eks-portfolio-cluster"
+}
+
+variable "kubernetes_version" {
+  type        = string
+  description = "Desired Kubernetes control plane version."
+  default     = "1.31"
+}
+
+variable "vpc_cidr" {
+  type        = string
+  description = "Base CIDR block for the Virtual Private Cloud."
+  default     = "10.0.0.0/16"
+}
+
+variable "public_subnet_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks for the two public subnets."
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
 variable "private_subnet_cidrs" {
   type        = list(string)
   description = "CIDR blocks for the two private subnets where worker nodes run."
