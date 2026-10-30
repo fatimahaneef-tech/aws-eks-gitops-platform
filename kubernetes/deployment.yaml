@@ -31,6 +31,7 @@ spec:
         - name: fastapi-app
           # NOTE: In production, this image URL will be dynamically updated by Kustomize or CI
           image: portfolio-fastapi-app:v1.0.1
+
           imagePullPolicy: IfNotPresent
 
           

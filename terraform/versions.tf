@@ -12,10 +12,10 @@ terraform {
   # Once you run Phase 3 (Bootstrap S3 Bucket), uncomment this block, replace
   # the bucket name with your actual bucket name, and run `terraform init -migrate-state`.
   #
-  # backend "s3" {
-  #   bucket       = "eks-portfolio-tfstate-ul9lx4n2"
-  #   key          = "platform/eks/terraform.tfstate"
-  #   region       = "us-east-1"
-  #   use_lockfile = true # Native S3 locking (Terraform 1.10+)
-  # }
+   backend "s3" {
+     bucket       = "eks-portfolio-tfstate-ul9lx4n2"
+     key          = "platform/eks/terraform.tfstate"
+     region       = "us-east-1"
+     use_lockfile = true # Native S3 locking (Terraform 1.10+)
+   }
 }
